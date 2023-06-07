@@ -32,6 +32,10 @@ public class WebhookMessage {
         this.userAgent = userAgent;
     }
 
+    public WebhookMessage(String webhookUrl) {
+        this(webhookUrl, "DWIJ");
+    }
+
     public WebhookMessage withAvatar(String imageUrl) {
         this.avatarUrl = imageUrl;
         return this;
