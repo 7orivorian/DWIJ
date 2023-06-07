@@ -34,7 +34,7 @@ DWIJ makes sending custom webhook messages to Discord simple and painless.
 <dependency>
     <groupId>com.github.7orivorian</groupId>
     <artifactId>DWIJ</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -54,13 +54,13 @@ repositories {
 
 ```gradle
 dependencies {
-    implementation 'com.github.7orivorian:DWIJ:1.0.0'
+    implementation 'com.github.7orivorian:DWIJ:1.0.1'
 }
 ```
 
 ### Other
 
-Use a `.jar` file from [releases](https://github.com/7orivorian/DWIJ/releases/tag/1.0.0)
+Use a `.jar` file from [releases](https://github.com/7orivorian/DWIJ/releases/tag/1.0.1)
 
 # Building
 
