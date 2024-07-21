@@ -23,12 +23,12 @@ public class Main {
                 .withTts(false)
                 .withEmbed(
                         new Embed()
-                                .withTitle("My embed title!")
-                                .withUrl("https://github.com/7orivorian")
-                                .withDescription("cute lil guyyy")
-                                .withImage("https://i.pinimg.com/originals/1b/34/7c/1b347cf538cf2099ed59d88a68c312b9.jpg")
-                                .withFooter("Powered by 7orivorian <3", "https://avatars.githubusercontent.com/u/61598620?v=4")
-                                .withColor(new Color(0x00EEFF))
+                                .title("My embed title!")
+                                .url("https://github.com/7orivorian")
+                                .description("cute lil guyyy")
+                                .image("https://i.pinimg.com/originals/1b/34/7c/1b347cf538cf2099ed59d88a68c312b9.jpg")
+                                .footer("Powered by 7orivorian <3", "https://avatars.githubusercontent.com/u/61598620?v=4")
+                                .color(new Color(0x00EEFF))
                 );
 
         // Send your message to all your friends :D
