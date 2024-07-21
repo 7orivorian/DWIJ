@@ -1,15 +1,20 @@
 package me.tori.dwij;
 
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * @author <b>7orivorian</b>
- * @since <b>June 07, 2023</b>
+ * @author <a href="https://github.com/7orivorian">7orivorian</a>
+ * @since 2.0.0
  */
-class JSONObject {
+@ApiStatus.Internal
+public class JSONObject {
 
     private final HashMap<String, Object> map = new HashMap<>();
 
@@ -51,6 +56,8 @@ class JSONObject {
         return builder.toString();
     }
 
+    @NotNull
+    @Contract(pure = true)
     private String quote(String string) {
         return "\"" + string + "\"";
     }

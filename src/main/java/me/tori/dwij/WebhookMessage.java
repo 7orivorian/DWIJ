@@ -1,5 +1,7 @@
 package me.tori.dwij;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
 import java.io.IOException;
@@ -9,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author <b>7orivorian</b>
- * @since <b>June 07, 2023</b>
+ * @author <a href="https://github.com/7orivorian">7orivorian</a>
+ * @since 2.0.0
  */
 public class WebhookMessage {
 
@@ -25,7 +27,8 @@ public class WebhookMessage {
     /**
      * Constructs a new {@linkplain WebhookMessage} instance
      *
-     * @param webhookUrl The webhook URL, obtained from <a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">Discord</a>
+     * @param webhookUrl The webhook URL, obtained from <a
+     *                   href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">Discord</a>
      */
     public WebhookMessage(String webhookUrl, String userAgent) {
         this.webhookUrl = webhookUrl;
@@ -36,59 +39,67 @@ public class WebhookMessage {
         this(webhookUrl, "DWIJ");
     }
 
-    public WebhookMessage withAvatar(String imageUrl) {
+    public WebhookMessage avatar(String imageUrl) {
         this.avatarUrl = imageUrl;
         return this;
     }
 
-    public WebhookMessage withContent(String content) {
+    public WebhookMessage content(String content) {
         this.content = content;
         return this;
     }
 
-    public WebhookMessage withUsername(String username) {
+    public WebhookMessage username(String username) {
         this.username = username;
         return this;
     }
 
-    public WebhookMessage withEmbed(Embed embed) {
+    public WebhookMessage addEmbed(Embed embed) {
+        if (embeds.size() >= 10) {
+            throw new IllegalArgumentException("Too many embeds");
+        }
         embeds.add(embed);
         return this;
     }
 
-    public WebhookMessage withTts(boolean tts) {
+    public WebhookMessage tts(boolean tts) {
         this.tts = tts;
         return this;
     }
 
-    public HttpResponse execute() throws IOException {
+    public HttpResponse execute() {
         if ((content == null) && embeds.isEmpty()) {
             throw new IllegalArgumentException("Set content or add at least one Embed");
         }
 
         JSONObject json = toJSONObject();
 
-        URL url = new URL(webhookUrl);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", userAgent);
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
+        try {
+            URL url = new URL(webhookUrl);
+            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+            connection.addRequestProperty("Content-Type", "application/json");
+            connection.addRequestProperty("User-Agent", userAgent);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
 
-        OutputStream out = connection.getOutputStream();
-        out.write(json.toString().getBytes());
-        out.flush();
-        out.close();
+            OutputStream out = connection.getOutputStream();
+            out.write(json.toString().getBytes());
+            out.flush();
+            out.close();
 
-        final HttpResponse httpResponse = new HttpResponse(connection.getResponseCode(), connection.getResponseMessage());
+            final HttpResponse httpResponse = HttpResponse.of(connection);
 
-        connection.getInputStream().close();
-        connection.disconnect();
+            connection.getInputStream().close();
+            connection.disconnect();
 
-        return httpResponse;
+            return httpResponse;
+        } catch (IOException e) {
+            return HttpResponse.of(e);
+        }
     }
 
-    public JSONObject toJSONObject() {
+    @NotNull
+    private JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
 
         json.put("content", content);
