@@ -1,4 +1,4 @@
-# Discord Webhook Interface for Java
+# <ins>D</ins>iscord <ins>W</ins>ebhook <ins>I</ins>nterface for <ins>J</ins>ava
 
 ![GitHub all releases](https://img.shields.io/github/downloads/7orivorian/DWIJ/total?style=flat-square)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/7orivorian/DWIJ?style=flat-square)
@@ -8,7 +8,8 @@ DWIJ makes sending custom webhook messages to Discord simple and painless.
 
 ### Features
 
-* Customize every aspect of your messages, including username, content, avatar, embeds, links, and more!
+* Customize every aspect of your messages, including username, content, avatar,
+  embeds, links, and more!
 * Small size allows for seamless integration with your project <3
 
 # Importing
@@ -60,45 +61,51 @@ dependencies {
 
 ### Other
 
-Use a `.jar` file from [releases](https://github.com/7orivorian/DWIJ/releases/tag/1.0.1)
+Use a `.jar` file
+from [releases](https://github.com/7orivorian/DWIJ/releases/tag/1.0.1)
 
 # Building
 
 * Clone this repository
 * Run `mvn package`
 
-Packaged jar file can be found in the `target/` directory.
+Packaged jar file can be found in the `./target/` directory.
 
 # Usage
 
 ```java
-// Define urls to keep your code pretty ;P
-String webhookUrl = "<your_webhook_url_here>";
-String avatarUrl = "<your_avatar_url_here>";
+class Main {
+    public static void main(String[] args) {
 
-// Construct your fantastic message!
-WebhookMessage message = new WebhookMessage(webhookUrl)
-        .withAvatar(avatarUrl)
-        .withUsername("Happy boi")
-        .withContent("Hello world!")
-        .withTts(false)
-        .withEmbed(
-                new Embed()
-                        .withTitle("My embed title!")
-                        .withUrl("https://github.com/7orivorian")
-                        .withDescription("cute lil guyyy")
-                        .withImage("https://i.pinimg.com/originals/1b/34/7c/1b347cf538cf2099ed59d88a68c312b9.jpg")
-                        .withFooter("Powered by 7orivorian <3", "https://avatars.githubusercontent.com/u/61598620?v=4")
-                        .withColor(new Color(0x00EEFF))
-        );
+        // Define urls to keep your code pretty ;P
+        String webhookUrl = "<your_webhook_url_here>";
+        String avatarUrl = "<your_avatar_url_here>";
 
-// Send your message to all your friends :D
-try {
-    message.execute();
-} catch (IOException e) {
-    // Catch any exceptions for bug-squashing ease :>
-    e.printStackTrace();
+        // Construct your fantastic message!
+        WebhookMessage message = new WebhookMessage(webhookUrl)
+                .withAvatar(avatarUrl)
+                .withUsername("Happy boi")
+                .withContent("Hello world!")
+                .withTts(false)
+                .withEmbed(
+                        new Embed()
+                                .withTitle("My embed title!")
+                                .withUrl("https://github.com/7orivorian")
+                                .withDescription("cute lil guyyy")
+                                .withImage("https://i.pinimg.com/originals/1b/34/7c/1b347cf538cf2099ed59d88a68c312b9.jpg")
+                                .withFooter("Powered by 7orivorian <3", "https://avatars.githubusercontent.com/u/61598620?v=4")
+                                .withColor(new Color(0x00EEFF))
+                );
+
+        // Send your message to all your friends :D
+        try {
+            message.execute();
+        } catch (IOException e) {
+            // Catch any exceptions for bug-squashing ease :>
+            e.printStackTrace();
+        }
+    }
 }
 ```
 
-_Created and maintained by [7orivorian](https://github.com/7orivorian)_
+_Created and maintained by [7orivorian](https://github.com/7orivorian)._
