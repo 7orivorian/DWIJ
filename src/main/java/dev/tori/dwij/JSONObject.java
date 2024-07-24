@@ -1,4 +1,4 @@
-package me.tori.dwij;
+package dev.tori.dwij;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;

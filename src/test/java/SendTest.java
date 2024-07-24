@@ -1,5 +1,5 @@
-import me.tori.dwij.Embed;
-import me.tori.dwij.WebhookMessage;
+import dev.tori.dwij.Embed;
+import dev.tori.dwij.WebhookMessage;
 
 import java.awt.*;
 
