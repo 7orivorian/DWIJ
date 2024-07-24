@@ -32,7 +32,13 @@ public class SendTest {
 
         // Send your message to all your friends :D
         message.execute()
-                .then((code, msg) -> System.out.println("Message sent to webhook!"))
-                .except(e -> e.printStackTrace());
+                .then(res -> {
+                    // Do anything you want to celebrate your success :O
+                    System.out.println("Success!");
+                })
+                .except(e -> {
+                    // Handle any pesky exceptions >:)
+                    e.printStackTrace();
+                });
     }
 }

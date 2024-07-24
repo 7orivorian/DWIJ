@@ -1,14 +1,18 @@
 package me.tori.dwij;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author <a href="https://github.com/7orivorian">7orivorian</a>
@@ -25,7 +29,7 @@ public class WebhookMessage {
     private final List<Embed> embeds = new ArrayList<>();
 
     /**
-     * Constructs a new {@linkplain WebhookMessage} instance
+     * Constructs a new {@linkplain WebhookMessage} instance.
      *
      * @param webhookUrl The webhook URL, obtained from <a
      *                   href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">Discord</a>
@@ -67,34 +71,25 @@ public class WebhookMessage {
         return this;
     }
 
-    public HttpResponse execute() {
+    public ResHandler<Void> execute() {
         if ((content == null) && embeds.isEmpty()) {
             throw new IllegalArgumentException("Set content or add at least one Embed");
         }
 
         JSONObject json = toJSONObject();
 
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(webhookUrl))
+                .POST(HttpRequest.BodyPublishers.ofString(json.toString()))
+                .header("Content-Type", "application/json")
+                .header("User-Agent", userAgent)
+                .build();
         try {
-            URL url = new URL(webhookUrl);
-            HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-            connection.addRequestProperty("Content-Type", "application/json");
-            connection.addRequestProperty("User-Agent", userAgent);
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-
-            OutputStream out = connection.getOutputStream();
-            out.write(json.toString().getBytes());
-            out.flush();
-            out.close();
-
-            final HttpResponse httpResponse = HttpResponse.of(connection);
-
-            connection.getInputStream().close();
-            connection.disconnect();
-
-            return httpResponse;
-        } catch (IOException e) {
-            return HttpResponse.of(e);
+            HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+            return new ResHandler<>(response);
+        } catch (IOException | InterruptedException e) {
+            return new ResHandler<>(e);
         }
     }
 
@@ -194,5 +189,56 @@ public class WebhookMessage {
                ", tts=" + tts +
                ", embeds=" + embeds +
                '}';
+    }
+
+    public static final class ResHandler<T> {
+        @Nullable
+        private final HttpResponse<T> response;
+        @Nullable
+        private final Exception exception;
+
+        @Contract(pure = true)
+        public ResHandler(@Nullable HttpResponse<T> response) {
+            this(response, null);
+        }
+
+        @Contract(pure = true)
+        public ResHandler(@Nullable Exception exception) {
+            this(null, exception);
+        }
+
+        @Contract(pure = true)
+        private ResHandler(@Nullable HttpResponse<T> response, @Nullable Exception exception) {
+            this.response = response;
+            this.exception = exception;
+        }
+
+        @Contract("_ -> this")
+        public ResHandler<T> then(Consumer<HttpResponse<T>> action) {
+            if (response != null) {
+                action.accept(response);
+            }
+            return this;
+        }
+
+        @Contract("_ -> this")
+        public ResHandler<T> except(Consumer<Exception> action) {
+            if (exception != null) {
+                action.accept(exception);
+            }
+            return this;
+        }
+
+        @Nullable
+        @Contract(pure = true)
+        public HttpResponse<T> response() {
+            return response;
+        }
+
+        @Nullable
+        @Contract(pure = true)
+        public Exception exception() {
+            return exception;
+        }
     }
 }
